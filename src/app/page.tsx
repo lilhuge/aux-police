@@ -11,7 +11,7 @@ export default function Home() {
 
 	return (
 		<div className='flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black'>
-			<main className='flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-8 px-4 bg-white dark:bg-black sm:items-start'>
+			<main className='flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-8 px-4 bg-white dark:bg-black '>
 				<Image
 					className='w-full h-auto dark:invert'
 					src='/hero.svg'
@@ -22,16 +22,29 @@ export default function Home() {
 					priority
 				/>
 				<div className='flex flex-col items-center justify-center'>
-					<form action={joinSession} className='flex flex-col'>
+					<form
+						action={joinSession}
+						className='flex flex-col items-center justify-center'
+					>
 						<input
 							name='sessionCode'
 							type='text'
 							placeholder='Enter Session Code'
-							className='placeholder:text-center'
+							className='w-full border border-gray-300 text-center placeholder:text-center px-3 py-2 rounded-md'
 						/>
-						<button type='submit'>Join Session</button>
+						<button
+							type='submit'
+							className='w-full px-2 rounded-md bg-blue-950 text-white'
+						>
+							Join Session
+						</button>
 					</form>
-					<button type='button'> Start Session </button>
+					<button
+						type='button'
+						className='w-full px-2 rounded-md bg-blue-950 text-white'
+					>
+						Start Session
+					</button>
 				</div>
 
 				{/* <div className='flex flex-col items-center gap-6 text-center sm:items-start sm:text-left'>
