@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 
 export default function Home() {
 	const joinSession = (formData: FormData) => {
@@ -9,9 +10,11 @@ export default function Home() {
 		alert(`You searched for '${sessionCode}'`)
 	}
 
+	const router = useRouter()
+
 	return (
 		<div className='flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black'>
-			<main className='flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-8 px-4 bg-white dark:bg-black '>
+			<main className='flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-12 px-4 bg-white dark:bg-black '>
 				<Image
 					className='w-full h-auto dark:invert'
 					src='/hero.svg'
@@ -21,27 +24,28 @@ export default function Home() {
 					sizes='100vw'
 					priority
 				/>
-				<div className='flex flex-col items-center justify-center'>
+				<div className='flex flex-col w-full items-center justify-center px-8'>
 					<form
 						action={joinSession}
-						className='flex flex-col items-center justify-center'
+						className='flex flex-col w-full items-center justify-center'
 					>
 						<input
 							name='sessionCode'
 							type='text'
 							placeholder='Enter Session Code'
-							className='w-full border border-gray-300 text-center placeholder:text-center px-3 py-2 rounded-md'
+							className='w-full border border-gray-300 text-center placeholder:text-center px-3 py-2 mb-4 rounded-md'
 						/>
 						<button
 							type='submit'
-							className='w-full px-2 rounded-md bg-blue-950 text-white'
+							className='w-full h-8 px-2 rounded-md bg-blue-950 text-white mb-4'
 						>
 							Join Session
 						</button>
 					</form>
 					<button
 						type='button'
-						className='w-full px-2 rounded-md bg-blue-950 text-white'
+						className='w-full h-8 px-2 rounded-md bg-blue-950 text-white'
+						onClick={() => router.push('/player')}
 					>
 						Start Session
 					</button>
