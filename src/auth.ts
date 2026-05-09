@@ -1,82 +1,36 @@
-import { eq } from 'drizzle-orm'
+// Auth.js is kept for session management only (auth(), useSession(), JWT decoding).
+//
+// We cannot use Auth.js's Spotify provider because in v5 beta it constructs the
+// redirect_uri from the request Host header, which Next.js always normalises to
+// "localhost". Spotify banned localhost as a redirect URI in April 2025.
+// All workarounds (AUTH_URL, trustHost, x-forwarded-host, Next.js proxy) failed
+// to override this behaviour in the beta runtime.
+//
+// Instead, the full OAuth dance lives in /api/auth/spotify/ (login + callback),
+// which hardcodes 127.0.0.1. On successful auth the callback mints an Auth.js-
+// compatible JWE cookie so the rest of the app works unchanged.
+
 import NextAuth from 'next-auth'
-import Spotify from 'next-auth/providers/spotify'
-import { db } from '@/db'
-import { users } from '@/db/schema'
-
-const SPOTIFY_SCOPES = [
-	'streaming',
-	'user-read-email',
-	'user-read-private',
-	'user-modify-playback-state',
-	'user-read-playback-state',
-].join(' ')
-
+import Credentials from 'next-auth/providers/credentials'
 export const { handlers, auth, signIn, signOut } = NextAuth({
 	providers: [
-		Spotify({
-			clientId: process.env.AUTH_SPOTIFY_ID ?? '',
-			clientSecret: process.env.AUTH_SPOTIFY_SECRET ?? '',
-			authorization: {
-				params: { scope: SPOTIFY_SCOPES },
-			},
+		// Credentials provider exists only so Auth.js initialises without a real provider.
+		// It is never called — sessions are created by minting JWE cookies directly.
+		Credentials({
+			credentials: {},
+			authorize: () => null,
 		}),
 	],
 	callbacks: {
-		async signIn({ account, profile }) {
-			if (account?.provider !== 'spotify' || !account.access_token) return false
-
-			const spotifyUserId = profile?.id as string
-			const displayName = (profile?.display_name as string) ?? null
-			const expiresAt = account.expires_at
-				? new Date(account.expires_at * 1000)
-				: null
-
-			const existing = await db.query.users.findFirst({
-				where: eq(users.spotifyUserId, spotifyUserId),
-			})
-
-			if (existing) {
-				await db
-					.update(users)
-					.set({
-						spotifyAccessToken: account.access_token,
-						spotifyRefreshToken:
-							account.refresh_token ?? existing.spotifyRefreshToken,
-						spotifyTokenExpiresAt: expiresAt,
-						displayName,
-						updatedAt: new Date(),
-					})
-					.where(eq(users.id, existing.id))
-			} else {
-				await db.insert(users).values({
-					spotifyUserId,
-					displayName,
-					spotifyAccessToken: account.access_token,
-					spotifyRefreshToken: account.refresh_token ?? null,
-					spotifyTokenExpiresAt: expiresAt,
-				})
-			}
-
-			return true
-		},
-
-		async jwt({ token, account, profile }) {
-			if (account?.provider === 'spotify' && profile?.id) {
-				const user = await db.query.users.findFirst({
-					where: eq(users.spotifyUserId, profile.id as string),
-				})
-				if (user) token.userId = user.id
-			}
+		async jwt({ token }) {
+			// userId is embedded in the JWE we mint in the callback route
 			return token
 		},
-
 		async session({ session, token }) {
-			if (token.userId) {
-				session.user.id = token.userId as string
-			}
+			if (token.userId) session.user.id = token.userId as string
 			return session
 		},
 	},
 	session: { strategy: 'jwt' },
+	trustHost: true,
 })

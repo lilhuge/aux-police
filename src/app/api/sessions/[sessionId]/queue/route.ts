@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server'
 import { db } from '@/db'
 import { queueItems, sessions } from '@/db/schema'
 import { computeFairPositions } from '@/lib/fairness'
-import { parseTrackUri } from '@/lib/spotify'
+import { getValidAccessToken, parseTrackUri, spotifyPlay } from '@/lib/spotify'
 import type { AddTrackBody } from '@/types'
 
 export async function POST(
@@ -42,6 +42,20 @@ export async function POST(
 		)
 	}
 
+	const isQueueEmpty =
+		(await db.query.queueItems.findFirst({
+			where: and(
+				eq(queueItems.sessionId, sessionId),
+				eq(queueItems.status, 'playing'),
+			),
+		})) === undefined &&
+		(await db.query.queueItems.findFirst({
+			where: and(
+				eq(queueItems.sessionId, sessionId),
+				eq(queueItems.status, 'pending'),
+			),
+		})) === undefined
+
 	const pending = await db.query.queueItems.findMany({
 		where: and(
 			eq(queueItems.sessionId, sessionId),
@@ -52,6 +66,8 @@ export async function POST(
 	const maxPosition =
 		pending.length > 0 ? Math.max(...pending.map(i => i.position)) : 0
 
+	const insertStatus = isQueueEmpty ? 'playing' : 'pending'
+
 	const [newItem] = await db
 		.insert(queueItems)
 		.values({
@@ -60,31 +76,43 @@ export async function POST(
 			trackUri,
 			requestedByUserId: body.requestedByUserId,
 			requestedByUserName: body.requestedByUserName,
-			status: 'pending',
+			status: insertStatus,
 		})
 		.returning()
 
-	const allPending = await db.query.queueItems.findMany({
-		where: and(
-			eq(queueItems.sessionId, sessionId),
-			eq(queueItems.status, 'pending'),
-		),
-		orderBy: asc(queueItems.createdAt),
-	})
+	// Auto-play when this is the first track and a device is registered
+	if (isQueueEmpty && session.deviceId) {
+		try {
+			const { accessToken } = await getValidAccessToken(session.hostUserId)
+			await spotifyPlay(accessToken, session.deviceId, trackUri)
+		} catch (err) {
+			console.error('Auto-play error:', err)
+		}
+	}
 
-	const positionUpdates = computeFairPositions(
-		allPending.map(i => ({
-			id: i.id,
-			requestedByUserId: i.requestedByUserId,
-			createdAt: i.createdAt.toISOString(),
-		})),
-	)
+	if (!isQueueEmpty) {
+		const allPending = await db.query.queueItems.findMany({
+			where: and(
+				eq(queueItems.sessionId, sessionId),
+				eq(queueItems.status, 'pending'),
+			),
+			orderBy: asc(queueItems.createdAt),
+		})
 
-	await Promise.all(
-		positionUpdates.map(({ id, position }) =>
-			db.update(queueItems).set({ position }).where(eq(queueItems.id, id)),
-		),
-	)
+		const positionUpdates = computeFairPositions(
+			allPending.map(i => ({
+				id: i.id,
+				requestedByUserId: i.requestedByUserId,
+				createdAt: i.createdAt.toISOString(),
+			})),
+		)
+
+		await Promise.all(
+			positionUpdates.map(({ id, position }) =>
+				db.update(queueItems).set({ position }).where(eq(queueItems.id, id)),
+			),
+		)
+	}
 
 	return NextResponse.json(newItem, { status: 201 })
 }

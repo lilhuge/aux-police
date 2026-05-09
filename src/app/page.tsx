@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { signIn, useSession } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import { useState } from 'react'
 import { joinSession } from '@/lib/api'
 
@@ -29,7 +29,7 @@ export default function HomePage() {
 
 	async function handleCreateSession() {
 		if (status !== 'authenticated') {
-			await signIn('spotify')
+			window.location.href = '/api/auth/spotify/login'
 			return
 		}
 		const res = await fetch('/api/sessions', {

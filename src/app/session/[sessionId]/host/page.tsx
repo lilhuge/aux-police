@@ -2,6 +2,7 @@
 
 import { use, useEffect, useRef, useState } from 'react'
 import {
+	addTrack,
 	getSessionView,
 	getSpotifyAccessToken,
 	notifyTrackFinished,
@@ -50,6 +51,9 @@ export default function HostPage({
 	const [deviceId, setDeviceId] = useState<string | null>(null)
 	const [desync, setDesync] = useState(false)
 	const [sdkReady, setSdkReady] = useState(false)
+	const [trackInput, setTrackInput] = useState('')
+	const [adding, setAdding] = useState(false)
+	const [addError, setAddError] = useState<string | null>(null)
 
 	const playerRef = useRef<SpotifyPlayer | null>(null)
 	const wasPlayingRef = useRef(false)
@@ -152,6 +156,27 @@ export default function HostPage({
 		}
 	}, [sdkReady, sessionId])
 
+	async function handleAddTrack(e: React.FormEvent) {
+		e.preventDefault()
+		if (!trackInput.trim()) return
+		setAdding(true)
+		setAddError(null)
+		try {
+			await addTrack(sessionId, {
+				trackUri: trackInput.trim(),
+				requestedByUserId: 'host',
+				requestedByUserName: 'Host',
+			})
+			setTrackInput('')
+			const data = await getSessionView(sessionId)
+			setView(data)
+		} catch {
+			setAddError('Could not add track. Check the Spotify URL and try again.')
+		} finally {
+			setAdding(false)
+		}
+	}
+
 	async function handleSkip() {
 		await skipTrack(sessionId)
 		const data = await getSessionView(sessionId)
@@ -215,6 +240,24 @@ export default function HostPage({
 					</span>
 				</section>
 			)}
+
+			<form onSubmit={handleAddTrack} className='flex flex-col gap-2'>
+				<input
+					type='text'
+					value={trackInput}
+					onChange={e => setTrackInput(e.target.value)}
+					placeholder='Paste Spotify track URL or URI'
+					className='bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
+				/>
+				{addError && <p className='text-red-400 text-xs'>{addError}</p>}
+				<button
+					type='submit'
+					disabled={adding || !trackInput.trim()}
+					className='bg-green-600 hover:bg-green-500 disabled:opacity-50 rounded-lg py-3 font-semibold transition-colors'
+				>
+					{adding ? 'Adding…' : 'Add to Queue'}
+				</button>
+			</form>
 
 			{view?.upcoming && view.upcoming.length > 0 && (
 				<section>
