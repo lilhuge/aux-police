@@ -5,7 +5,8 @@ import { encode } from '@auth/core/jwt'
 import { db } from '@/db'
 import { users } from '@/db/schema'
 
-const REDIRECT_URI = 'http://127.0.0.1:3000/api/auth/spotify/callback'
+const BASE_URL = process.env.AUTH_URL ?? 'http://127.0.0.1:3000'
+const REDIRECT_URI = `${BASE_URL}/api/auth/spotify/callback`
 const COOKIE_NAME = 'authjs.session-token'
 const THIRTY_DAYS = 60 * 60 * 24 * 30
 
@@ -20,7 +21,7 @@ export async function GET(req: Request) {
 	cookieStore.delete('spotify_oauth_state')
 
 	if (error || !code || !state || state !== savedState) {
-		return NextResponse.redirect('http://127.0.0.1:3000/?error=oauth')
+		return NextResponse.redirect(`${BASE_URL}/?error=oauth`)
 	}
 
 	// Exchange code for tokens
@@ -40,7 +41,7 @@ export async function GET(req: Request) {
 	})
 
 	if (!tokenRes.ok) {
-		return NextResponse.redirect('http://127.0.0.1:3000/?error=token')
+		return NextResponse.redirect(`${BASE_URL}/?error=token`)
 	}
 
 	const tokenData = (await tokenRes.json()) as {
@@ -55,7 +56,7 @@ export async function GET(req: Request) {
 	})
 
 	if (!profileRes.ok) {
-		return NextResponse.redirect('http://127.0.0.1:3000/?error=profile')
+		return NextResponse.redirect(`${BASE_URL}/?error=profile`)
 	}
 
 	const profile = (await profileRes.json()) as {
@@ -107,7 +108,7 @@ export async function GET(req: Request) {
 		salt: COOKIE_NAME,
 	})
 
-	const response = NextResponse.redirect('http://127.0.0.1:3000/')
+	const response = NextResponse.redirect(`${BASE_URL}/`)
 	response.cookies.set(COOKIE_NAME, jwe, {
 		httpOnly: true,
 		sameSite: 'lax',
