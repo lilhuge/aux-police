@@ -1,6 +1,6 @@
+import { NextResponse } from 'next/server'
 import { db } from '@/db'
 import type { JoinSessionBody } from '@/types'
-import { NextResponse } from 'next/server'
 
 export async function POST(req: Request) {
 	const body = (await req.json()) as JoinSessionBody

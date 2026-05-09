@@ -1,8 +1,14 @@
 'use client'
 
-import { getSessionView, getSpotifyAccessToken, notifyTrackFinished, registerDevice, skipTrack } from '@/lib/api'
-import type { SessionView } from '@/types'
 import { use, useEffect, useRef, useState } from 'react'
+import {
+	getSessionView,
+	getSpotifyAccessToken,
+	notifyTrackFinished,
+	registerDevice,
+	skipTrack,
+} from '@/lib/api'
+import type { SessionView } from '@/types'
 
 declare global {
 	interface Window {
@@ -33,7 +39,11 @@ type SpotifyState = {
 	}
 }
 
-export default function HostPage({ params }: { params: Promise<{ sessionId: string }> }) {
+export default function HostPage({
+	params,
+}: {
+	params: Promise<{ sessionId: string }>
+}) {
 	const { sessionId } = use(params)
 
 	const [view, setView] = useState<SessionView | null>(null)
@@ -122,7 +132,12 @@ export default function HostPage({ params }: { params: Promise<{ sessionId: stri
 
 			const currentUri = s.track_window?.current_track?.uri
 			const expectedUri = viewRef.current?.nowPlaying?.trackUri
-			if (currentUri && expectedUri && currentUri !== expectedUri && !s.paused) {
+			if (
+				currentUri &&
+				expectedUri &&
+				currentUri !== expectedUri &&
+				!s.paused
+			) {
 				setDesync(true)
 			} else {
 				setDesync(false)
@@ -150,23 +165,23 @@ export default function HostPage({ params }: { params: Promise<{ sessionId: stri
 	}
 
 	return (
-		<main className="min-h-screen flex flex-col gap-6 p-4 bg-zinc-950 text-white max-w-lg mx-auto">
-			<header className="flex items-center justify-between pt-4">
-				<h1 className="text-xl font-bold">Aux Police — Host</h1>
-				<span className="text-xs text-zinc-500">
+		<main className='min-h-screen flex flex-col gap-6 p-4 bg-zinc-950 text-white max-w-lg mx-auto'>
+			<header className='flex items-center justify-between pt-4'>
+				<h1 className='text-xl font-bold'>Aux Police — Host</h1>
+				<span className='text-xs text-zinc-500'>
 					{deviceId ? `SDK: ${deviceId.slice(0, 8)}…` : 'Connecting SDK…'}
 				</span>
 			</header>
 
 			{desync && (
-				<div className="bg-yellow-900 border border-yellow-700 rounded-xl p-4 flex items-center justify-between">
-					<p className="text-sm text-yellow-200">
+				<div className='bg-yellow-900 border border-yellow-700 rounded-xl p-4 flex items-center justify-between'>
+					<p className='text-sm text-yellow-200'>
 						Playback changed outside Aux Police.
 					</p>
 					<button
-						type="button"
+						type='button'
 						onClick={handleResync}
-						className="text-xs bg-yellow-700 hover:bg-yellow-600 rounded px-3 py-1 transition-colors"
+						className='text-xs bg-yellow-700 hover:bg-yellow-600 rounded px-3 py-1 transition-colors'
 					>
 						Re-sync
 					</button>
@@ -174,24 +189,28 @@ export default function HostPage({ params }: { params: Promise<{ sessionId: stri
 			)}
 
 			{view?.nowPlaying ? (
-				<section className="bg-zinc-900 rounded-xl p-4">
-					<p className="text-xs text-zinc-500 uppercase tracking-widest mb-1">Now Playing</p>
-					<p className="font-mono text-sm truncate">{view.nowPlaying.trackUri}</p>
-					<p className="text-xs text-zinc-400 mt-1">
+				<section className='bg-zinc-900 rounded-xl p-4'>
+					<p className='text-xs text-zinc-500 uppercase tracking-widest mb-1'>
+						Now Playing
+					</p>
+					<p className='font-mono text-sm truncate'>
+						{view.nowPlaying.trackUri}
+					</p>
+					<p className='text-xs text-zinc-400 mt-1'>
 						Added by {view.nowPlaying.requestedByUserName}
 					</p>
 					<button
-						type="button"
+						type='button'
 						onClick={handleSkip}
-						className="mt-3 bg-zinc-700 hover:bg-zinc-600 rounded-lg px-4 py-2 text-sm font-semibold transition-colors"
+						className='mt-3 bg-zinc-700 hover:bg-zinc-600 rounded-lg px-4 py-2 text-sm font-semibold transition-colors'
 					>
 						Skip
 					</button>
 				</section>
 			) : (
-				<section className="bg-zinc-900 rounded-xl p-4 text-zinc-500 text-sm">
+				<section className='bg-zinc-900 rounded-xl p-4 text-zinc-500 text-sm'>
 					Queue is empty. Guests can add tracks using code:{' '}
-					<span className="text-white font-mono font-bold">
+					<span className='text-white font-mono font-bold'>
 						{view?.session?.joinCode ?? '…'}
 					</span>
 				</section>
@@ -199,12 +218,14 @@ export default function HostPage({ params }: { params: Promise<{ sessionId: stri
 
 			{view?.upcoming && view.upcoming.length > 0 && (
 				<section>
-					<p className="text-xs text-zinc-500 uppercase tracking-widest mb-2">Up Next</p>
-					<ul className="flex flex-col gap-2">
+					<p className='text-xs text-zinc-500 uppercase tracking-widest mb-2'>
+						Up Next
+					</p>
+					<ul className='flex flex-col gap-2'>
 						{view.upcoming.map(item => (
-							<li key={item.id} className="bg-zinc-900 rounded-lg p-3">
-								<p className="font-mono text-xs truncate">{item.trackUri}</p>
-								<p className="text-xs text-zinc-400 mt-0.5">
+							<li key={item.id} className='bg-zinc-900 rounded-lg p-3'>
+								<p className='font-mono text-xs truncate'>{item.trackUri}</p>
+								<p className='text-xs text-zinc-400 mt-0.5'>
 									#{item.position} · {item.requestedByUserName}
 								</p>
 							</li>

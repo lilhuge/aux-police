@@ -1,8 +1,8 @@
 'use client'
 
+import { use, useEffect, useRef, useState } from 'react'
 import { addTrack, getSessionView } from '@/lib/api'
 import type { SessionView } from '@/types'
-import { use, useEffect, useRef, useState } from 'react'
 
 const GUEST_ID_KEY = 'aux_police_guest_id'
 const GUEST_NAME_KEY = 'aux_police_guest_name'
@@ -88,22 +88,24 @@ export default function GuestPage({
 
 	if (!nameConfirmed) {
 		return (
-			<main className="min-h-screen flex flex-col items-center justify-center gap-6 p-6 bg-zinc-950 text-white">
-				<h1 className="text-2xl font-bold">Join the queue</h1>
-				<form onSubmit={confirmName} className="flex flex-col gap-3 w-full max-w-xs">
+			<main className='min-h-screen flex flex-col items-center justify-center gap-6 p-6 bg-zinc-950 text-white'>
+				<h1 className='text-2xl font-bold'>Join the queue</h1>
+				<form
+					onSubmit={confirmName}
+					className='flex flex-col gap-3 w-full max-w-xs'
+				>
 					<input
-						type="text"
+						type='text'
 						value={displayName}
 						onChange={e => setDisplayName(e.target.value)}
-						placeholder="Your name"
+						placeholder='Your name'
 						maxLength={30}
-						autoFocus
-						className="bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+						className='bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500'
 					/>
 					<button
-						type="submit"
+						type='submit'
 						disabled={!displayName.trim()}
-						className="bg-green-600 hover:bg-green-500 disabled:opacity-50 rounded-lg py-3 font-semibold transition-colors"
+						className='bg-green-600 hover:bg-green-500 disabled:opacity-50 rounded-lg py-3 font-semibold transition-colors'
 					>
 						Enter
 					</button>
@@ -113,35 +115,39 @@ export default function GuestPage({
 	}
 
 	return (
-		<main className="min-h-screen flex flex-col gap-6 p-4 bg-zinc-950 text-white max-w-lg mx-auto">
-			<header className="flex items-center justify-between pt-4">
-				<h1 className="text-xl font-bold">Aux Police</h1>
-				<span className="text-zinc-400 text-sm">{displayName}</span>
+		<main className='min-h-screen flex flex-col gap-6 p-4 bg-zinc-950 text-white max-w-lg mx-auto'>
+			<header className='flex items-center justify-between pt-4'>
+				<h1 className='text-xl font-bold'>Aux Police</h1>
+				<span className='text-zinc-400 text-sm'>{displayName}</span>
 			</header>
 
 			{view?.nowPlaying && (
-				<section className="bg-zinc-900 rounded-xl p-4">
-					<p className="text-xs text-zinc-500 uppercase tracking-widest mb-1">Now Playing</p>
-					<p className="font-mono text-sm truncate">{view.nowPlaying.trackUri}</p>
-					<p className="text-xs text-zinc-400 mt-1">
+				<section className='bg-zinc-900 rounded-xl p-4'>
+					<p className='text-xs text-zinc-500 uppercase tracking-widest mb-1'>
+						Now Playing
+					</p>
+					<p className='font-mono text-sm truncate'>
+						{view.nowPlaying.trackUri}
+					</p>
+					<p className='text-xs text-zinc-400 mt-1'>
 						Added by {view.nowPlaying.requestedByUserName}
 					</p>
 				</section>
 			)}
 
-			<form onSubmit={handleAddTrack} className="flex flex-col gap-2">
+			<form onSubmit={handleAddTrack} className='flex flex-col gap-2'>
 				<input
-					type="text"
+					type='text'
 					value={trackInput}
 					onChange={e => setTrackInput(e.target.value)}
-					placeholder="Paste Spotify track URL or URI"
-					className="bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+					placeholder='Paste Spotify track URL or URI'
+					className='bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
 				/>
-				{addError && <p className="text-red-400 text-xs">{addError}</p>}
+				{addError && <p className='text-red-400 text-xs'>{addError}</p>}
 				<button
-					type="submit"
+					type='submit'
 					disabled={adding || !trackInput.trim()}
-					className="bg-green-600 hover:bg-green-500 disabled:opacity-50 rounded-lg py-3 font-semibold transition-colors"
+					className='bg-green-600 hover:bg-green-500 disabled:opacity-50 rounded-lg py-3 font-semibold transition-colors'
 				>
 					{adding ? 'Adding…' : 'Add to Queue'}
 				</button>
@@ -149,12 +155,14 @@ export default function GuestPage({
 
 			{view?.upcoming && view.upcoming.length > 0 && (
 				<section>
-					<p className="text-xs text-zinc-500 uppercase tracking-widest mb-2">Up Next</p>
-					<ul className="flex flex-col gap-2">
+					<p className='text-xs text-zinc-500 uppercase tracking-widest mb-2'>
+						Up Next
+					</p>
+					<ul className='flex flex-col gap-2'>
 						{view.upcoming.map(item => (
-							<li key={item.id} className="bg-zinc-900 rounded-lg p-3">
-								<p className="font-mono text-xs truncate">{item.trackUri}</p>
-								<p className="text-xs text-zinc-400 mt-0.5">
+							<li key={item.id} className='bg-zinc-900 rounded-lg p-3'>
+								<p className='font-mono text-xs truncate'>{item.trackUri}</p>
+								<p className='text-xs text-zinc-400 mt-0.5'>
 									#{item.position} · {item.requestedByUserName}
 								</p>
 							</li>

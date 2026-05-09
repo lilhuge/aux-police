@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rtk tree *)",
+      "Bash(rtk git *)",
+      "mcp__notion__notion-fetch",
+      "Bash(rtk read *)",
+      "Bash(rtk wc *)",
+      "Bash(pnpm add *)",
+      "Bash(pnpm test *)",
+      "Bash(rtk ls *)",
+      "Bash(rtk find *)",
+      "Bash(pnpm db:generate *)",
+      "Bash(rtk pnpm *)",
+      "Bash(PGPASSWORD=npg_OeV8I5LKDcgp rtk psql *)",
+      "Bash(shasum -a 256 /Users/hugomatthews/Documents/other/projects/aux-police/src/db/migrations/0000_friendly_sharon_carter.sql)",
+      "Bash(./node_modules/.bin/dotenv-cli --version)",
+      "Bash(node -e \"const {execSync} = require\\('child_process'\\); console.log\\(execSync\\('ls node_modules/.bin | grep dotenv'\\).toString\\(\\)\\)\")",
+      "Bash(node -e \"const {execSync} = require\\('child_process'\\); console.log\\(execSync\\('ls node_modules | grep dotenv'\\).toString\\(\\)\\)\")",
+      "Bash(node -e \"const {execSync} = require\\('child_process'\\); console.log\\(execSync\\('ls node_modules/dotenv-cli/'\\).toString\\(\\)\\)\")",
+      "Bash(node -e \"const {execSync} = require\\('child_process'\\); console.log\\(execSync\\('cat node_modules/dotenv-cli/package.json'\\).toString\\(\\)\\)\")",
+      "Bash(node -e ' *)",
+      "Bash(pnpm db:migrate)",
+      "WebFetch(domain:developer.spotify.com)",
+      "Bash(rtk tsc *)",
+      "Bash(rtk lint *)",
+      "Bash(rtk npx *)",
+      "Bash(/Users/hugomatthews/Documents/other/projects/aux-police/node_modules/.bin/biome --version)",
+      "Bash(/Users/hugomatthews/Documents/other/projects/aux-police/node_modules/.bin/biome check *)",
+      "Bash(./node_modules/.bin/biome check *)",
+      "Bash(./node_modules/.bin/biome format *)"
+    ]
+  }
+}

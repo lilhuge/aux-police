@@ -1,9 +1,9 @@
+import { eq } from 'drizzle-orm'
+import { NextResponse } from 'next/server'
 import { auth } from '@/auth'
 import { db } from '@/db'
 import { queueItems, sessions } from '@/db/schema'
 import type { ReorderQueueBody } from '@/types'
-import { eq } from 'drizzle-orm'
-import { NextResponse } from 'next/server'
 
 export async function PATCH(
 	req: Request,
@@ -27,12 +27,18 @@ export async function PATCH(
 	const body = (await req.json()) as ReorderQueueBody
 
 	if (!Array.isArray(body.orderedIds) || body.orderedIds.length === 0) {
-		return NextResponse.json({ error: 'orderedIds must be a non-empty array' }, { status: 400 })
+		return NextResponse.json(
+			{ error: 'orderedIds must be a non-empty array' },
+			{ status: 400 },
+		)
 	}
 
 	await Promise.all(
 		body.orderedIds.map((id, index) =>
-			db.update(queueItems).set({ position: (index + 1) * 10 }).where(eq(queueItems.id, id)),
+			db
+				.update(queueItems)
+				.set({ position: (index + 1) * 10 })
+				.where(eq(queueItems.id, id)),
 		),
 	)
 

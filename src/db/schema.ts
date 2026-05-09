@@ -1,11 +1,5 @@
 import { relations } from 'drizzle-orm'
-import {
-	integer,
-	pgTable,
-	text,
-	timestamp,
-	uuid,
-} from 'drizzle-orm/pg-core'
+import { integer, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
 
 export const users = pgTable('users', {
 	id: uuid('id').primaryKey().defaultRandom(),
@@ -16,8 +10,12 @@ export const users = pgTable('users', {
 	spotifyTokenExpiresAt: timestamp('spotify_token_expires_at', {
 		withTimezone: true,
 	}),
-	createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-	updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+	createdAt: timestamp('created_at', { withTimezone: true })
+		.defaultNow()
+		.notNull(),
+	updatedAt: timestamp('updated_at', { withTimezone: true })
+		.defaultNow()
+		.notNull(),
 })
 
 export const sessions = pgTable('sessions', {
@@ -29,7 +27,9 @@ export const sessions = pgTable('sessions', {
 	currentIndex: integer('current_index'),
 	playbackMode: text('playback_mode').notNull().default('stop-on-empty'),
 	deviceId: text('device_id'),
-	createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+	createdAt: timestamp('created_at', { withTimezone: true })
+		.defaultNow()
+		.notNull(),
 })
 
 export const queueItems = pgTable('queue_items', {
@@ -42,7 +42,9 @@ export const queueItems = pgTable('queue_items', {
 	requestedByUserId: text('requested_by_user_id').notNull(),
 	requestedByUserName: text('requested_by_user_name').notNull(),
 	status: text('status').notNull().default('pending'),
-	createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+	createdAt: timestamp('created_at', { withTimezone: true })
+		.defaultNow()
+		.notNull(),
 })
 
 export const usersRelations = relations(users, ({ many }) => ({

@@ -1,8 +1,8 @@
+import { NextResponse } from 'next/server'
 import { auth } from '@/auth'
 import { db } from '@/db'
 import { sessions } from '@/db/schema'
 import type { CreateSessionBody } from '@/types'
-import { NextResponse } from 'next/server'
 
 function generateJoinCode(): string {
 	const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'

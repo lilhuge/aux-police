@@ -1,8 +1,8 @@
-import { db } from '@/db'
-import { users } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 import NextAuth from 'next-auth'
 import Spotify from 'next-auth/providers/spotify'
+import { db } from '@/db'
+import { users } from '@/db/schema'
 
 const SPOTIFY_SCOPES = [
 	'streaming',
@@ -15,8 +15,8 @@ const SPOTIFY_SCOPES = [
 export const { handlers, auth, signIn, signOut } = NextAuth({
 	providers: [
 		Spotify({
-			clientId: process.env.AUTH_SPOTIFY_ID!,
-			clientSecret: process.env.AUTH_SPOTIFY_SECRET!,
+			clientId: process.env.AUTH_SPOTIFY_ID ?? '',
+			clientSecret: process.env.AUTH_SPOTIFY_SECRET ?? '',
 			authorization: {
 				params: { scope: SPOTIFY_SCOPES },
 			},
@@ -41,7 +41,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 					.update(users)
 					.set({
 						spotifyAccessToken: account.access_token,
-						spotifyRefreshToken: account.refresh_token ?? existing.spotifyRefreshToken,
+						spotifyRefreshToken:
+							account.refresh_token ?? existing.spotifyRefreshToken,
 						spotifyTokenExpiresAt: expiresAt,
 						displayName,
 						updatedAt: new Date(),

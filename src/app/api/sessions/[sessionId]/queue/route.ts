@@ -1,10 +1,10 @@
+import { and, asc, eq } from 'drizzle-orm'
+import { NextResponse } from 'next/server'
 import { db } from '@/db'
 import { queueItems, sessions } from '@/db/schema'
 import { computeFairPositions } from '@/lib/fairness'
 import { parseTrackUri } from '@/lib/spotify'
 import type { AddTrackBody } from '@/types'
-import { and, asc, eq } from 'drizzle-orm'
-import { NextResponse } from 'next/server'
 
 export async function POST(
 	req: Request,
@@ -24,7 +24,10 @@ export async function POST(
 
 	if (!body.trackUri || !body.requestedByUserId || !body.requestedByUserName) {
 		return NextResponse.json(
-			{ error: 'trackUri, requestedByUserId, and requestedByUserName are required' },
+			{
+				error:
+					'trackUri, requestedByUserId, and requestedByUserName are required',
+			},
 			{ status: 400 },
 		)
 	}
@@ -40,12 +43,14 @@ export async function POST(
 	}
 
 	const pending = await db.query.queueItems.findMany({
-		where: and(eq(queueItems.sessionId, sessionId), eq(queueItems.status, 'pending')),
+		where: and(
+			eq(queueItems.sessionId, sessionId),
+			eq(queueItems.status, 'pending'),
+		),
 	})
 
-	const maxPosition = pending.length > 0
-		? Math.max(...pending.map(i => i.position))
-		: 0
+	const maxPosition =
+		pending.length > 0 ? Math.max(...pending.map(i => i.position)) : 0
 
 	const [newItem] = await db
 		.insert(queueItems)
@@ -60,7 +65,10 @@ export async function POST(
 		.returning()
 
 	const allPending = await db.query.queueItems.findMany({
-		where: and(eq(queueItems.sessionId, sessionId), eq(queueItems.status, 'pending')),
+		where: and(
+			eq(queueItems.sessionId, sessionId),
+			eq(queueItems.status, 'pending'),
+		),
 		orderBy: asc(queueItems.createdAt),
 	})
 

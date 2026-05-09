@@ -1,8 +1,8 @@
+import { eq } from 'drizzle-orm'
+import { NextResponse } from 'next/server'
 import { db } from '@/db'
 import { queueItems, sessions } from '@/db/schema'
 import { buildSessionView } from '@/lib/session'
-import { eq } from 'drizzle-orm'
-import { NextResponse } from 'next/server'
 
 export async function GET(
 	_req: Request,

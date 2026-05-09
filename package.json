@@ -10,9 +10,9 @@
     "format": "biome format --write",
     "test": "vitest run",
     "test:watch": "vitest",
-    "db:generate": "dotenv-cli -e .env.local -- drizzle-kit generate",
-    "db:migrate": "dotenv-cli -e .env.local -- drizzle-kit migrate",
-    "db:studio": "dotenv-cli -e .env.local -- drizzle-kit studio"
+    "db:generate": "dotenv -e .env.local -- drizzle-kit generate",
+    "db:migrate": "dotenv -e .env.local -- drizzle-kit migrate",
+    "db:studio": "dotenv -e .env.local -- drizzle-kit studio"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.11.2",
@@ -30,7 +30,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^6.0.1",
-    "dotenv-cli": "^11.0.0",
+    "dotenv-cli": "11",
     "drizzle-kit": "^0.31.10",
     "tailwindcss": "^4",
     "typescript": "^5",

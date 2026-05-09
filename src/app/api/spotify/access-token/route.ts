@@ -1,6 +1,6 @@
+import { NextResponse } from 'next/server'
 import { auth } from '@/auth'
 import { getValidAccessToken } from '@/lib/spotify'
-import { NextResponse } from 'next/server'
 
 export async function GET() {
 	const session = await auth()

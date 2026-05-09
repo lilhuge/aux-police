@@ -1,7 +1,5 @@
 'use client'
 
-import Image from 'next/image'
-
 export default function Player() {
 	const joinSession = (formData: FormData) => {
 		const sessionCode = formData.get('sessionCode')

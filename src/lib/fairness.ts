@@ -30,8 +30,8 @@ export function computeFairPositions(items: FairnessInput[]): FairnessOutput[] {
 	}
 
 	const sortedUserIds = [...userGroups.keys()].sort((a, b) => {
-		const aFirst = userFirstSeen.get(a)!
-		const bFirst = userFirstSeen.get(b)!
+		const aFirst = userFirstSeen.get(a) ?? ''
+		const bFirst = userFirstSeen.get(b) ?? ''
 		return aFirst.localeCompare(bFirst)
 	})
 
@@ -42,12 +42,14 @@ export function computeFairPositions(items: FairnessInput[]): FairnessOutput[] {
 	while (hasItems) {
 		hasItems = false
 		for (const userId of sortedUserIds) {
-			const group = userGroups.get(userId)!
+			const group = userGroups.get(userId) ?? []
 			if (group.length > 0) {
-				const item = group.shift()!
-				result.push({ id: item.id, position })
-				position += 10
-				hasItems = true
+				const item = group.shift()
+				if (item) {
+					result.push({ id: item.id, position })
+					position += 10
+					hasItems = true
+				}
 			}
 		}
 	}

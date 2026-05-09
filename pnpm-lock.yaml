@@ -49,7 +49,7 @@ importers:
         specifier: ^6.0.1
         version: 6.0.1(vite@8.0.11(@types/node@20.19.27)(esbuild@0.27.7)(jiti@2.6.1)(tsx@4.21.0))
       dotenv-cli:
-        specifier: ^11.0.0
+        specifier: '11'
         version: 11.0.0
       drizzle-kit:
         specifier: ^0.31.10

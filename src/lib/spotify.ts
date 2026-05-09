@@ -9,7 +9,8 @@ export function parseTrackUri(input: string): string {
 
 	try {
 		const url = new URL(input)
-		if (url.hostname !== 'open.spotify.com') throw new Error('Not a Spotify URL')
+		if (url.hostname !== 'open.spotify.com')
+			throw new Error('Not a Spotify URL')
 		const parts = url.pathname.split('/')
 		const trackIndex = parts.indexOf('track')
 		if (trackIndex === -1 || !parts[trackIndex + 1])

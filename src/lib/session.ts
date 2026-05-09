@@ -1,4 +1,10 @@
-import type { PlaybackMode, QueueItem, QueueItemStatus, Session, SessionView } from '@/types'
+import type {
+	PlaybackMode,
+	QueueItem,
+	QueueItemStatus,
+	Session,
+	SessionView,
+} from '@/types'
 
 type DbSession = {
 	id: string

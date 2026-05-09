@@ -1,13 +1,13 @@
 {
-  "version": "7",
-  "dialect": "postgresql",
-  "entries": [
-    {
-      "idx": 0,
-      "version": "7",
-      "when": 1778328930080,
-      "tag": "0000_friendly_sharon_carter",
-      "breakpoints": true
-    }
-  ]
+	"version": "7",
+	"dialect": "postgresql",
+	"entries": [
+		{
+			"idx": 0,
+			"version": "7",
+			"when": 1778328930080,
+			"tag": "0000_friendly_sharon_carter",
+			"breakpoints": true
+		}
+	]
 }
