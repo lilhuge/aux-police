@@ -28,6 +28,7 @@ export default function HomePage() {
 	}
 
 	async function handleCreateSession() {
+		if (status === 'loading') return
 		if (status !== 'authenticated') {
 			window.location.href = '/api/auth/spotify/login'
 			return
@@ -40,6 +41,8 @@ export default function HomePage() {
 		if (res.ok) {
 			const data = (await res.json()) as { session: { id: string } }
 			router.push(`/session/${data.session.id}/host`)
+		} else if (res.status === 401) {
+			window.location.href = '/api/auth/spotify/login'
 		}
 	}
 
@@ -79,9 +82,11 @@ export default function HomePage() {
 					onClick={handleCreateSession}
 					className='border border-zinc-600 hover:border-zinc-400 rounded-lg px-6 py-3 font-semibold text-zinc-300 hover:text-white transition-colors'
 				>
-					{status === 'authenticated'
-						? `Start Session (${session?.user?.name ?? 'Host'})`
-						: 'Sign in with Spotify to host'}
+					{status === 'loading'
+						? 'Loading…'
+						: status === 'authenticated'
+							? `Start Session (${session?.user?.name ?? 'Host'})`
+							: 'Sign in with Spotify to host'}
 				</button>
 			</div>
 		</main>
