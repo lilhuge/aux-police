@@ -49,7 +49,7 @@ export default function HomePage() {
 	return (
 		<main className='min-h-screen flex flex-col items-center justify-center gap-10 p-6 bg-zinc-950 text-white'>
 			<div className='flex flex-col items-center gap-2'>
-				<img src='/hero2.png' alt='Aux Police' className='w-40 h-40' />
+				<img src='/hero2.png' alt='Aux Police' className='w-72' />
 				<h1 className='text-4xl font-bold tracking-tight'>Aux Police</h1>
 				<p className='text-zinc-400 text-sm'>skip songs get slapped</p>
 			</div>
