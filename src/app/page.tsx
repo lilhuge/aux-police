@@ -51,7 +51,7 @@ export default function HomePage() {
 			<div className='flex flex-col items-center gap-2'>
 				<img src='/hero.svg' alt='Aux Police' className='w-40 h-40' />
 				<h1 className='text-4xl font-bold tracking-tight'>Aux Police</h1>
-				<p className='text-zinc-400 text-sm'>Fair queue for party music</p>
+				<p className='text-zinc-400 text-sm'>skip songs get slapped</p>
 			</div>
 
 			<form
