@@ -1,31 +1,16 @@
 'use client'
 
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { joinSession } from '@/lib/api'
 
 export default function HomePage() {
 	const router = useRouter()
-	const searchParams = useSearchParams()
 	const { data: session, status } = useSession()
 	const [joinCode, setJoinCode] = useState('')
 	const [error, setError] = useState<string | null>(null)
 	const [joining, setJoining] = useState(false)
-
-	useEffect(() => {
-		if (status !== 'authenticated' || searchParams.get('host') !== '1') return
-		fetch('/api/sessions', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ playbackMode: 'stop-on-empty' }),
-		})
-			.then(res => res.json())
-			.then((data: { session: { id: string } }) => {
-				router.push(`/session/${data.session.id}/host`)
-			})
-			.catch(() => setError('Failed to create session. Please try again.'))
-	}, [status, searchParams, router])
 
 	async function handleJoin(e: React.FormEvent) {
 		e.preventDefault()

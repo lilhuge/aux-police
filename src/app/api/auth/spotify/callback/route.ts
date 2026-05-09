@@ -7,7 +7,8 @@ import { users } from '@/db/schema'
 
 const BASE_URL = process.env.AUTH_URL ?? 'http://127.0.0.1:3000'
 const REDIRECT_URI = `${BASE_URL}/api/auth/spotify/callback`
-const COOKIE_NAME = 'authjs.session-token'
+const isSecure = BASE_URL.startsWith('https')
+const COOKIE_NAME = isSecure ? '__Secure-authjs.session-token' : 'authjs.session-token'
 const THIRTY_DAYS = 60 * 60 * 24 * 30
 
 export async function GET(req: Request) {
@@ -108,12 +109,13 @@ export async function GET(req: Request) {
 		salt: COOKIE_NAME,
 	})
 
-	const response = NextResponse.redirect(`${BASE_URL}/?host=1`)
+	const response = NextResponse.redirect(`${BASE_URL}/`)
 	response.cookies.set(COOKIE_NAME, jwe, {
 		httpOnly: true,
 		sameSite: 'lax',
 		path: '/',
 		maxAge: THIRTY_DAYS,
+		secure: isSecure,
 	})
 
 	return response
