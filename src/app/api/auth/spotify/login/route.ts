@@ -27,7 +27,8 @@ const SPOTIFY_SCOPES = [
 	'user-read-playback-state',
 ].join(' ')
 
-const REDIRECT_URI = 'http://127.0.0.1:3000/api/auth/spotify/callback'
+const BASE_URL = process.env.AUTH_URL ?? 'http://127.0.0.1:3000'
+const REDIRECT_URI = `${BASE_URL}/api/auth/spotify/callback`
 
 export async function GET() {
 	const state = randomBytes(16).toString('hex')
