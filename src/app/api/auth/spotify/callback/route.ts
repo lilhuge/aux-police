@@ -108,7 +108,7 @@ export async function GET(req: Request) {
 		salt: COOKIE_NAME,
 	})
 
-	const response = NextResponse.redirect(`${BASE_URL}/`)
+	const response = NextResponse.redirect(`${BASE_URL}/?host=1`)
 	response.cookies.set(COOKIE_NAME, jwe, {
 		httpOnly: true,
 		sameSite: 'lax',
